@@ -1,0 +1,19 @@
+version: "3.7"
+
+services:
+  nginx:
+    image: nginx:1.17-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    volumes:
+      - "jenkins-ci:/var/jenkins_home"
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+
+volumes:
+  jenkins-ci:
