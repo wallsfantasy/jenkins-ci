@@ -14,9 +14,9 @@ services:
     image: jenkins/jenkins:lts
     volumes:
       - "jenkins-ci:/var/jenkins_home"
-    ports:
-      - "8080:8080"
-      - "50000:50000"
+#    ports:
+#      - "8080:8080"
+#      - "50000:50000"
 
 volumes:
   jenkins-ci:
