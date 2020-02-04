@@ -10,7 +10,7 @@ server {
     }
 
     location /.well-known/acme-challenge/ {
-        root /var/www/cert;
+        root /cert/www;
     }
 }
 
