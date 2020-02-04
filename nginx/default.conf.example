@@ -3,15 +3,35 @@
 server {
     listen 80;
     server_name jenkins.domain.tld;
-
-    auth_basic            "Authentication Required";
-    auth_basic_user_file  conf.d/.htpasswd;
+    server_tokens off;
 
     location / {
-        proxy_set_header        Host $host:$server_port;
-        proxy_set_header        X-Real-IP $remote_addr;
-        proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header        X-Forwarded-Proto $scheme;
+        return 301 https://jenkins.domain.tld;
+    }
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/cert;
+    }
+}
+
+server {
+    listen 443 ssl;
+    server_name jenkins.domain.tld;
+    server_tokens off;
+
+    ssl_certificate         /cert/ssl/jenkins.domain.tld.crt;
+    ssl_certificate_key     /cert/ssl/jenkins.domain.tld.key;
+    include                 /cert/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam             /cert/letsencrypt/ssl-dhparams.pem;
+
+    auth_basic              "Authentication Required";
+    auth_basic_user_file    conf.d/.htpasswd;
+
+    location / {
+        proxy_set_header    Host $host:$server_port;
+        proxy_set_header    X-Real-IP $remote_addr;
+        proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header    X-Forwarded-Proto $scheme;
 
         # Reset auth header to Jenkins (or Jetty will catch it)
         proxy_set_header        Authorization "";
