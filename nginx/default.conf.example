@@ -6,11 +6,12 @@ server {
     server_tokens off;
 
     location / {
-        return 301 https://jenkins.domain.tld;
+        root /cert/www;
+        try_files $uri @fallback;
     }
 
-    location /.well-known/acme-challenge/ {
-        root /cert/www;
+    location @fallback {
+        return 301 https://jenkins.domain.tld;
     }
 }
 
@@ -19,8 +20,8 @@ server {
     server_name jenkins.domain.tld;
     server_tokens off;
 
-    ssl_certificate         /cert/ssl/jenkins.domain.tld.crt;
-    ssl_certificate_key     /cert/ssl/jenkins.domain.tld.key;
+    ssl_certificate         /etc/letsencrypt/live/jenkins.domain.tld/fullchain.pem;
+    ssl_certificate_key     /etc/letsencrypt/live/jenkins.domain.tld/privkey.pem;
     include                 /cert/letsencrypt/options-ssl-nginx.conf;
     ssl_dhparam             /cert/letsencrypt/ssl-dhparams.pem;
 
