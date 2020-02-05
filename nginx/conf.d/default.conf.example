@@ -6,7 +6,7 @@ server {
     server_tokens off;
 
     location / {
-        root /cert/www;
+        root /www;
         try_files $uri @fallback;
     }
 
@@ -22,8 +22,8 @@ server {
 
     ssl_certificate         /etc/letsencrypt/live/jenkins.domain.tld/fullchain.pem;
     ssl_certificate_key     /etc/letsencrypt/live/jenkins.domain.tld/privkey.pem;
-    include                 /cert/letsencrypt/options-ssl-nginx.conf;
-    ssl_dhparam             /cert/letsencrypt/ssl-dhparams.pem;
+    include                 conf.d/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam             conf.d/letsencrypt/ssl-dhparams.pem;
 
     auth_basic              "Authentication Required";
     auth_basic_user_file    conf.d/.htpasswd;
