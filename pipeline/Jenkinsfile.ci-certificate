@@ -1,0 +1,11 @@
+#!groovy
+
+node('') {
+    stage('Update Certificate') {
+        echo 'Update Certificate'
+    }
+
+    stage('Reload Nginx') {
+        echo 'Reload Nginx'
+    }
+}
