@@ -1,11 +1,33 @@
 #!groovy
 
-node('') {
-    stage('Update Certificate') {
-        echo 'Update Certificate'
-    }
+def remote = [:]
+remote.name = 'ci'
+remote.host = params.fqdn
+remote.allowAnyHosts = true
 
-    stage('Reload Nginx') {
-        echo 'Reload Nginx'
+node('') {
+    withCredentials([
+            sshUserPrivateKey(credentialsId: 'deployment-ssh', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')
+    ]) {
+        remote.user = userName
+        remote.identityFile = identity
+
+        stage('Update Certificate') {
+            def command = [
+                    'certbot certonly --webroot -n',
+                    '-w ' + params.webRootPath,
+                    '-d ' + params.fqdn
+            ].join(' ')
+            sshCommand remote: remote, sudo: true, command: command
+        }
+
+        stage('Reload Nginx') {
+            def command = [
+                    'docker-compose -f ' + params.composePath,
+                    'exec -T nginx',
+                    'nginx -s reload'
+            ].join(' ')
+            sshCommand remote: remote, command: command
+        }
     }
 }
