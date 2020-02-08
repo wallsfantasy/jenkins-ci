@@ -14,9 +14,11 @@ services:
       - "/etc/letsencrypt/archive/${FULL_DOMAIN_NAME}:/etc/letsencrypt/archive/${FULL_DOMAIN_NAME}:ro"
 
   jenkins:
-    image: jenkins/jenkins:lts
+    build:
+      context: ./jenkins
     restart: unless-stopped
     volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
       - "jenkins-ci:/var/jenkins_home"
 #    ports:
 #      - "8080:8080"
