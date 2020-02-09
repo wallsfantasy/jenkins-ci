@@ -17,6 +17,8 @@ services:
     build:
       context: ./jenkins
     restart: unless-stopped
+    environment:
+      - TZ=Asia/Bangkok
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "jenkins-ci:/var/jenkins_home"
